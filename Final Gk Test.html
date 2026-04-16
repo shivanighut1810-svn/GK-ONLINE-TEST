@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>राजमुद्रा अकॅडमी येवला - ५० सराव प्रश्न (Bilingual)</title>
+    <style>
+        :root { --primary: #e67e22; --dark: #2c3e50; --success: #27ae60; --purple: #8e44ad; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; margin: 0; }
+        header { background: var(--dark); color: white; padding: 10px; text-align: center; border-bottom: 5px solid var(--primary); position: sticky; top: 0; z-index: 1000; }
+        .timer-box { background: #c0392b; color: white; padding: 5px 15px; border-radius: 5px; display: inline-block; font-size: 1.2em; margin-top: 5px; }
+        .container { display: flex; flex-wrap: wrap; max-width: 1200px; margin: 20px auto; gap: 20px; padding: 10px; }
+        .quiz-area { flex: 2; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); min-width: 300px; }
+        .sidebar { flex: 1; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); min-width: 280px; height: fit-content; }
+        .q-text { font-size: 1.2em; color: var(--dark); margin-bottom: 5px; }
+        .q-hindi { font-size: 1em; color: #666; font-style: italic; margin-bottom: 20px; display: block; }
+        .options { list-style: none; padding: 0; }
+        .options li { margin: 10px 0; padding: 12px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; display: flex; align-items: center; }
+        .options li:hover { background: #f9f9f9; border-color: var(--primary); }
+        .options input { margin-right: 15px; transform: scale(1.3); }
+        .palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-top: 15px; max-height: 300px; overflow-y: auto; }
+        .dot { height: 35px; border-radius: 4px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 13px; background: white; }
+        .answered { background: var(--success) !important; color: white; border: none; }
+        .marked { background: var(--purple) !important; color: white; border: none; }
+        .current { border: 2px solid var(--primary); box-shadow: 0 0 5px var(--primary); }
+        .btn-group { display: flex; gap: 10px; margin-top: 25px; }
+        button { padding: 12px 18px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; flex: 1; color: white; }
+        .btn-next { background: var(--success); }
+        .btn-review { background: var(--purple); }
+        .btn-back { background: #7f8c8d; }
+        .btn-submit { background: #c0392b; width: 100%; margin-top: 20px; font-size: 1.1em; }
+        #result-area { display: none; background: white; padding: 30px; border-radius: 10px; margin: 20px auto; max-width: 900px; }
+        .explanation { background: #fffde7; padding: 10px; border-left: 4px solid #f1c40f; margin-top: 10px; }
+        footer { text-align: center; padding: 20px; color: #666; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2 style="margin:0">राजमुद्रा अकॅडमी, येवला</h2>
+    <div class="timer-box">वेळ शिल्लक: <span id="timer">20:00</span></div>
+</header>
+
+<div class="container" id="main-test">
+    <div class="quiz-area">
+        <div id="question-container"></div>
+        <div class="btn-group">
+            <button class="btn-back" onclick="prevQuest()">Back</button>
+            <button class="btn-review" onclick="markForReview()">Review</button>
+            <button class="btn-next" onclick="nextQuest()">Save & Next</button>
+        </div>
+    </div>
+    <div class="sidebar">
+        <h3>प्रश्न पत्रिका (Palette)</h3>
+        <div class="palette" id="palette"></div>
+        <button class="btn-submit" onclick="submitQuiz()">Test Submit करा</button>
+    </div>
+</div>
+
+<div id="result-area">
+    <h2 style="text-align: center;">निकाल आणि स्पष्टीकरण</h2>
+    <div id="score-card" style="font-size: 1.5em; text-align: center; margin-bottom: 20px; color: var(--success);"></div>
+    <div id="explanation-list"></div>
+    <button onclick="location.reload()" style="background:var(--primary); color:white; width:200px; margin: 20px auto; display: block; border:none; padding:10px; border-radius:5px;">पुन्हा सोडवा</button>
+</div>
+
+<footer>शुभम निघुट सर (७७०९१५६०३१)</footer>
+
+<script>
+    const questions = [
+        { mr: "जगातील पहिला जाहिरात म्हणून कोणता अभिलेख ओळखला जातो?", hi: "विश्व में प्रथम विज्ञापन के रूप में कौनसा अभिलेख जाना जाता है?", options: ["अशोक अभिलेख", "धोलावीरा अभिलेख", "सांची अभिलेख", "नासिक अभिलेख"], ans: 1, exp: "धोलावीरा येथील बोर्ड जगातील सर्वात जुन्या जाहिरात फलकांपैकी एक मानला जातो." },
+        { mr: "खरोष्ठी लिपी वाचण्यासाठी कोणाची मदत घेतली?", hi: "खरोष्ठी लिपि को पढ़ने में किसकी सहायता ली गई?", options: ["फारसी", "ग्रीक", "हिंदी", "संस्कृत"], ans: 1, exp: "खरोष्ठी लिपी वाचण्यासाठी ग्रीक-बॅक्ट्रियन नाण्यांची मदत घेण्यात आली." },
+        { mr: "प्राचीन भारतातील शिलालेख कोणत्या लिपीत लिहिले गेले?", hi: "भारत में प्राचीनतम शिलालेख किन लिपियों में लिखे गए हैं?", options: ["देवनागरी", "ब्राह्मी व खरोष्ठी", "फारसी", "रोमन"], ans: 1, exp: "प्राचीन भारतीय शिलालेख प्रामुख्याने ब्राह्मी आणि खरोष्ठी लिपीत आहेत." },
+        { mr: "अशोकांच्या अभिलेखांचे वाचन कोणी केले?", hi: "अशोक के अभिलेखों को पढ़ने में किसने सफलता प्राप्त की?", options: ["कनिंघम", "जेम्स प्रिन्सेप", "मेगास्थनीज", "फाह्यान"], ans: 1, exp: "जेम्स प्रिन्सेप यांनी १८३७ मध्ये प्रथमच अशोकचे शिलालेख वाचले." },
+        { mr: "भारताचा पहिला संस्कृत शिलालेख कोणता?", hi: "भारत का प्रथम संस्कृत शिलालेख कौन सा है?", options: ["प्रयाग प्रशस्ति", "गिरनार शिलालेख", "सांची लेख", "नासिक लेख"], ans: 1, exp: "रुद्रदामनचा गिरनार शिलालेख शुद्ध संस्कृतमधील पहिला मोठा लेख आहे." },
+        { mr: "पहिली चित्रयुक्त नाणी कोणी जारी केली?", hi: "प्रथम चित्रयुक्त सिक्के किसने जारी किए?", options: ["मौर्य", "गुप्त", "हिंद-यूनानी", "सातवाहन"], ans: 2, exp: "हिंद-यूनानी (Indo-Greeks) राजांनी भारतात पहिली चित्रयुक्त नाणी आणली." },
+        { mr: "सर्वाधिक शुद्ध सोन्याची नाणी कोणी जारी केली?", hi: "सर्वाधिक शुद्ध स्वर्ण मुद्राएं किसने जारी की?", options: ["गुप्त", "कुषाण", "मौर्य", "चालुक्य"], ans: 1, exp: "कुषाण राजांच्या काळात सोन्याची नाणी सर्वाधिक शुद्ध होती." },
+        { mr: "शीशाची नाणी कोणी जारी केली?", hi: "शीशे की मुद्रा किसने जारी की?", options: ["मौर्य", "सातवाहन", "गुप्त", "कुषाण"], ans: 1, exp: "सातवाहन राजांनी शिशाची नाणी मोठ्या प्रमाणात चलनात आणली." },
+        { mr: "अंकुरका विष्णु मंदिर कुठे आहे?", hi: "अंकुरका का विष्णु मंदिर कहाँ है?", options: ["भारत", "नेपाल", "कंबोडिया", "श्रीलंका"], ans: 2, exp: "कंबोडिया येथील अंगकोर वाट हे विष्णू मंदिर जगातील सर्वात मोठे धार्मिक स्थळ आहे." },
+        { mr: "बोराबुदूर मंदिर कुठे आहे?", hi: "बोराबुदूर मंदिर कहाँ स्थित है?", options: ["चीन", "जावा", "थाईलैंड", "भारत"], ans: 1, exp: "इंडोनेशियातील जावा बेटावर हे प्रसिद्ध बौद्ध मंदिर आहे." },
+        { mr: "पुरुष सूक्त कोणत्या ग्रंथाचा भाग आहे?", hi: "पुरुष सूक्त किस ग्रंथ का भाग है?", options: ["सामवेद", "ऋग्वेद", "अथर्ववेद", "यजुर्वेद"], ans: 1, exp: "ऋग्वेदाच्या दहाव्या मंडलात पुरुष सूक्ताचा समावेश आहे." },
+        { mr: "यजुर्वेदात काय आहे?", hi: "यजुर्वेद में क्या मिलता है?", options: ["मंत्र", "यज्ञ नियम", "कथा", "इतिहास"], ans: 1, exp: "यजुर्वेद हा यज्ञ आणि कर्माकांडाच्या नियमांचा ग्रंथ आहे." },
+        { mr: "रामायण कोणी लिहिले?", hi: "रामायण की रचना किसने की?", options: ["व्यास", "वाल्मीकि", "कालिदास", "तुलसीदास"], ans: 1, exp: "वाल्मीकि ऋषींनी रामायणाची रचना केली." },
+        { mr: "बौद्ध संघाचे नियम कुठे आहेत?", hi: "बौद्ध संघ के नियम कहाँ मिलते हैं?", options: ["वेद", "विनय पिटक", "उपनिषद", "गीता"], ans: 1, exp: "विनय पिटकमध्ये बौद्ध भिक्खूंच्या आचरणाचे नियम आहेत." },
+        { mr: "जैन ग्रंथांना काय म्हणतात?", hi: "जैन ग्रंथ क्या कहलाते हैं?", options: ["वेद", "आगम", "पुराण", "सूत्र"], ans: 1, exp: "जैन साहित्याला 'आगम' असे संबोधले जाते." },
+        { mr: "महाजनपदांची संख्या किती?", hi: "महाजनपदों की संख्या कितनी थी?", options: ["12", "14", "16", "18"], ans: 2, exp: "प्राचीन भारतात १६ महाजनपदे अस्तित्वात होती." },
+        { mr: "नालंदा विद्यापीठ कुठे होते?", hi: "नालंदा विश्वविद्यालय कहाँ था?", options: ["यूपी", "बिहार", "गुजरात", "महाराष्ट्र"], ans: 1, exp: "नालंदा विद्यापीठ बिहार राज्यामध्ये होते." },
+        { mr: "पहिला पाळीव प्राणी कोणता?", hi: "पहला पालतू पशु कौन था?", options: ["गाय", "घोड़ा", "कुत्ता", "बकरी"], ans: 2, exp: "मानवाने पाळलेला पहिला प्राणी कुत्रा होता." },
+        { mr: "मध्य पाषाण काळात कोणाची आकृती जास्त आढळते?", hi: "मध्य पाषाण काल में किसकी आकृति अधिक मिलती है?", options: ["घोड़ा", "हिरण", "हाथी", "शेर"], ans: 1, exp: "त्या काळातील कलेत हिरणाची चित्रे अधिक प्रमाणात आढळतात." },
+        { mr: "मेहरगड येथे कोणत्या पिकाचे पुरावे मिळाले?", hi: "मेहरगढ़ में कौनसी फसल के साक्ष्य मिले?", options: ["चावल", "गेहूं-जौ", "मक्का", "बाजरा"], ans: 1, exp: "मेहरगड येथे गहू आणि बार्लीच्या शेतीचे सर्वात जुने पुरावे सापडले." },
+        { mr: "मानवाने सर्वप्रथम वापरलेले धान्य कोणते?", hi: "मानव द्वारा सर्वप्रथम प्रयोग किया जाने वाला अनाज कौन सा था?", options: ["गेहूं", "जौ", "चावल", "मक्का"], ans: 1, exp: "जौ (बार्ली) हे मानवाने वापरलेले पहिले धान्य होते." },
+        { mr: "हिरणाच्या शिंगांपासून बनवलेली साधने कुठे सापडली?", hi: "हिरण के सींगों से निर्मित उपकरण कहाँ से प्राप्त हुए हैं?", options: ["कालीबंगा", "चिरांद", "लोथल", "हड़प्पा"], ans: 1, exp: "चिरांद (बिहार) येथे हाडांची व शिंगांची साधने सापडली." },
+        { mr: "जोखे संस्कृतीचा विस्तार कोणत्या राज्यात झाला?", hi: "जोखे संस्कृति का विस्तार किस राज्य में हुआ था?", options: ["गुजरात", "राजस्थान", "महाराष्ट्र", "पंजाब"], ans: 2, exp: "महाराष्ट्र राज्यामध्ये जोर्वे संस्कृतीचा विस्तार झाला होता." },
+        { mr: "सिंधू संस्कृतीचा उल्लेख सर्वप्रथम कोणी केला?", hi: "सिंधु स्थल पर प्राचीन सभ्यता का उल्लेख सर्वप्रथम किसने किया था?", options: ["फाह्यान", "ह्वेनसांग", "चार्ल्स मैसन", "मेगास्थनीज"], ans: 2, exp: "१८२६ मध्ये चार्ल्स मॅसन यांनी हडप्पाच्या ढिगाऱ्यांची माहिती दिली होती." },
+        { mr: "हडप्पा उत्खनन कोणत्या नदीकिनारी झाले?", hi: "हड़प्पा स्थल की खुदाई किस नदी के किनारे हुई?", options: ["गंगा", "सिंधu", "रावी", "यमुना"], ans: 2, exp: "हडप्पा रावी नदीच्या काठावर वसलेले होते." },
+        { mr: "हडप्पा ला काय म्हणतात?", hi: "सिंधु घाटी सभ्यता के हड़प्पा को क्या कहा जाता है?", options: ["नगर", "पत्तन", "राजधानी", "दुर्ग"], ans: 1, exp: "लोथलला बंदर (पत्तन) तर हडप्पाला मोठे नगर मानले जाते." },
+        { mr: "2012 मध्ये कोणत्या स्थळाला धोक्यातील यादीत समाविष्ट केले?", hi: "2012 में ग्लोबल हेरिटेज फंड ने किस स्थल को नष्ट होने की संभावना वाले स्थलों में शामिल किया?", options: ["हड़प्पा", "लोथल", "राखीगढ़ी", "धोलावीरा"], ans: 2, exp: "राखीगढ़ी (हरियाणा) या स्थळाला संरक्षणाच्या दृष्टीने धोक्याच्या यादीत ठेवले होते." },
+        { mr: "लघु हडप्पा कोणाला म्हणतात?", hi: "लघु हड़प्पा या लघु मोहनजोदड़ो किसे कहा जाता है?", options: ["धोलावीरा", "लोथल", "कालीबंगा", "रोपड़"], ans: 1, exp: "लोथल या शहराला लघु हडप्पा म्हणून ओळखले जाते." },
+        { mr: "मिश्र संस्कृती कुठे विकसित झाली?", hi: "सैंधव सभ्यता के समकालीन मिश्र की सभ्यता कहाँ विकसित हुई थी?", options: ["टाइग्रिस नदी", "नील नदी", "गंगा", "यमुना"], ans: 1, exp: "इजिप्शियन संस्कृती नाईल नदीच्या खोऱ्यात बहरली." },
+        { mr: "वृत्ताकार अग्निकुंड कुठे सापडले?", hi: "वृत्ताकार अग्निकुंड और तांबे की छेनी कहाँ से प्राप्त हुई?", options: ["गुजरात", "बिहार", "पंजाब", "राजस्थान"], ans: 2, exp: "कालीबंगा येथे वृत्ताकार आणि चौकोनी अग्निकुंड सापडले आहेत." },
+        { mr: "दगडी भिंतीने वेढलेले ठिकाण कोणते?", hi: "पाषाण निर्मित दीवार से घिरा स्थल कौन सा है?", options: ["हड़प्पा", "लोथल", "धोलावीरा", "कालीबंगा"], ans: 2, exp: "धोलावीरा हे शहर भव्य दगडी तटबंदीने सुरक्षित होते." },
+        { mr: "शंख वस्तूंचे केंद्र कोणते?", hi: "सीप की वस्तुओं के निर्माण का केंद्र कौन सा था?", options: ["लोथल", "धोलावीरा", "बालाकोट", "हड़प्पा"], ans: 2, exp: "बालाकोट हे समुद्री शंखांच्या वस्तू बनवण्याचे मोठे केंद्र होते." },
+        { mr: "इराण सीमेजवळ कोणते स्थळ आहे?", hi: "ईरान की सीमा के निकट कौन सा स्थल बसा था?", options: ["कालीबंगा", "सुत्कागेंडोर", "रोपड़", "लोथल"], ans: 1, exp: "सुत्कागेंडोर हे इराणच्या सीमेजवळ वसलेले बंदर होते." },
+        { mr: "धोलावीरा कुठे आहे?", hi: "धोलावीरा स्थल कहाँ स्थित है?", options: ["पंजाब", "गुजरात", "महाराष्ट्र", "राजस्थान"], ans: 1, exp: "धोलावीरा गुजरात मधील कच्छ जिल्ह्यात आहे." },
+        { mr: "मृतांचा टेकाड कोणाला म्हणतात?", hi: "मृतकों का टीला किसे कहा जाता है?", options: ["हड़प्पा", "मोहनजोदड़ो", "लोथल", "धोलावीरा"], ans: 1, exp: "मोहेंजोदारो या शब्दाचा अर्थ 'मृतांचा ढिगारा' असा होतो." },
+        { mr: "लाकडी दार व नालेचे पुरावे कुठे मिळाले?", hi: "लकड़ी की किवाड़ और नाली बनाने के साक्ष्य कहाँ मिले हैं?", options: ["हड़प्पा", "कालीबंगा", "लोथल", "रोपड़"], ans: 1, exp: "कालीबंगा येथे लाकडी कोरीव काम आणि नाले सापडले आहेत." },
+        { mr: "मोठा स्नानागार कुठे सापडला?", hi: "विशाल स्नानागार कहाँ मिला है?", options: ["हड़प्पा", "लोथल", "मोहनजोदड़ो", "कालीबंगा"], ans: 2, exp: "मोहेंजोदारो येथील विशाल सार्वजनिक स्नानगृह जगप्रसिद्ध आहे." },
+        { mr: "समांतर योजना कुठे सापडली?", hi: "समांतर चतुर्भुज योजना का साक्ष्य कहाँ से मिला है?", options: ["लोथल", "धोलावीरा", "हड़प्पा", "रोपड़"], ans: 1, exp: "धोलावीरा येथे शहराचे समांतर नियोजन पाहायला मिळते." },
+        { mr: "हडप्पा काळातील मुख्य पिके कोणती?", hi: "हड़प्पा काल की प्रमुख फसलें कौन सी थीं?", options: ["चावल", "गेहूं-जौ", "मक्का", "बाजरा"], ans: 1, exp: "गहू आणि बार्ली ही हडप्पा संस्कृतीतील मुख्य अन्नपिके होती." },
+        { mr: "तांदुळ शेतीचे पुरावे कुठे मिळाले?", hi: "चावल की खेती के साक्ष्य कहाँ से मिले हैं?", options: ["हड़प्पा", "लोथल-रंगपुर", "कालीबंगा", "रोपड़"], ans: 1, exp: "लोथल आणि रंगपूर येथे तांदळाच्या शेतीचे पुरावे सापडले आहेत." },
+        { mr: "मण्यांचा उद्योग केंद्र कोणते?", hi: "मनका निर्माण उद्योग का केंद्र कौन सा था?", options: ["हड़प्पा", "लोथल", "चन्हूदड़ो", "धोलावीरा"], ans: 2, exp: "चन्हुदारो येथे मणी बनवण्याचा मोठा कारखाना सापडला आहे." },
+        { mr: "हाताने बनवलेले सूती कपडे कुठे सापडले?", hi: "हाथ से बने सूती कपड़े कहाँ से मिले हैं?", options: ["हड़प्पा", "मोहनजोदड़ो", "लोथल", "रोपड़"], ans: 1, exp: "मोहेंजोदारो येथे विणलेल्या सुती कापडाचे तुकडे मिळाले आहेत." },
+        { mr: "सिंधू संस्कृतीची लिपी काय म्हणतात?", hi: "सिंधु सभ्यता में लेखन शैली को क्या कहा जाता है?", options: ["ब्राह्मी", "खरोष्ठी", "सिंधु लिपि", "देवनागरी"], ans: 2, exp: "या लिपीला 'सिंधू लिपी' म्हटले जाते, जिला अजून वाचता आलेले नाही." },
+        { mr: "मोहरांवर कोणत्या वृक्षाची आकृती आहे?", hi: "मोहरों में किस वृक्ष की आकृति पाई गई है?", options: ["नीम", "पीपल", "आम", "बरगद"], ans: 1, exp: "पिंपळाच्या झाडाला सिंधू संस्कृतीतील लोक पूजनीय मानत असत." },
+        { mr: "सिंह देवतेची मूर्ती कुठे सापडली?", hi: "सिंह वाले देवता की मूर्ति कहाँ से प्राप्त हुई है?", options: ["लोथल", "कालीबंगा", "हड़प्पा", "रोपड़"], ans: 1, exp: "कालीबंगा येथे शिंगे असलेल्या पशुपती देवतेची मुद्रा सापडली आहे." },
+        { mr: "हडप्पाच्या पहिल्या टप्प्यातील मृदभांडी कुठे मिळाली?", hi: "हड़प्पा के पहले चरण के मृदभांड कहाँ मिले हैं?", options: ["रोपड़", "लोथल", "धोलावीरा", "कालीबंगा"], ans: 0, exp: "रोपड येथे हडप्पाच्या प्रारंभीच्या काळातील मृदभांडी सापडली आहेत." },
+        { mr: "फाह्यान कोण होता?", hi: "फाह्यान कौन था?", options: ["शासक", "व्यापारी", "यात्री", "सैनिक"], ans: 2, exp: "फाह्यान हा चिनी बौद्ध प्रवासी होता जो गुप्त काळात भारतात आला." },
+        { mr: "ह्वेनसांगने कुठे शिक्षण घेतले?", hi: "ह्वेनसांग ने कहाँ अध्ययन किया?", options: ["तक्षशिला", "नालंदा", "उज्जैन", "काशी"], ans: 1, exp: "ह्वेनसांगने नालंदा विद्यापीठात राहून बौद्ध धर्माचे अध्ययन केले." },
+        { mr: "भारताचा सर्वात मोठा मानव संग्रहालय कुठे आहे?", hi: "भारत का सबसे बड़ा मानव संग्रहालय कहाँ है?", options: ["दिल्ली", "मुंबई", "भोपाल", "पुणे"], ans: 2, exp: "भोपाळ येथील 'इंदिरा गांधी राष्ट्रीय मानव संग्रहालय' हे देशातील सर्वात मोठे संग्रहालय आहे." },
+        { mr: "पेरिप्लस ग्रंथ कशाशी संबंधित आहे?", hi: "पेरिप्लस ऑफ द एरिथ्रियन सी किससे संबंधित है?", options: ["युद्ध", "व्यापार", "धर्म", "राजनीति"], ans: 1, exp: "हा ग्रंथ प्राचीन समुद्री व्यापार आणि बंदरांची माहिती देतो." }
+    ];
+
+    let currentIdx = 0;
+    let userAnswers = new Array(questions.length).fill(null);
+    let reviewStatus = new Array(questions.length).fill(false);
+    let timeLeft = 1200; // 20 minutes in seconds
+
+    const timerInterval = setInterval(() => {
+        if(timeLeft <= 0) {
+            clearInterval(timerInterval);
+            alert("वेळ संपली आहे! तुमची टेस्ट आपोआप सबमिट होत आहे.");
+            submitQuiz();
+        } else {
+            timeLeft--;
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            document.getElementById('timer').innerText = `${m}:${s < 10 ? '0'+s : s}`;
+        }
+    }, 1000);
+
+    function loadQuestion() {
+        const qData = questions[currentIdx];
+        let html = `<div class="question-box">
+            <p class="q-text"><b>प्रश्न ${currentIdx + 1}:</b> ${qData.mr}</p>
+            <span class="q-hindi">${qData.hi}</span>
+            <ul class="options">`;
+        qData.options.forEach((opt, i) => {
+            let checked = userAnswers[currentIdx] === i ? 'checked' : '';
+            html += `<li onclick="selectOpt(${i})">
+                <input type="radio" name="opt" id="o${i}" ${checked}> ${opt}
+            </li>`;
+        });
+        html += `</ul></div>`;
+        document.getElementById('question-container').innerHTML = html;
+        updatePalette();
+    }
+
+    function selectOpt(i) {
+        userAnswers[currentIdx] = i;
+        document.getElementById(`o${i}`).checked = true;
+        updatePalette();
+    }
+
+    function nextQuest() { if(currentIdx < questions.length - 1) { currentIdx++; loadQuestion(); } }
+    function prevQuest() { if(currentIdx > 0) { currentIdx--; loadQuestion(); } }
+    function markForReview() { reviewStatus[currentIdx] = !reviewStatus[currentIdx]; updatePalette(); nextQuest(); }
+
+    function updatePalette() {
+        let paletteHtml = "";
+        for(let i=0; i<questions.length; i++) {
+            let statusClass = "";
+            if(i === currentIdx) statusClass = "current";
+            else if(reviewStatus[i]) statusClass = "marked";
+            else if(userAnswers[i] !== null) statusClass = "answered";
+            paletteHtml += `<div class="dot ${statusClass}" onclick="jumpTo(${i})">${i+1}</div>`;
+        }
+        document.getElementById('palette').innerHTML = paletteHtml;
+    }
+
+    function jumpTo(i) { currentIdx = i; loadQuestion(); }
+
+    function submitQuiz() {
+        clearInterval(timerInterval);
+        document.getElementById('main-test').style.display = "none";
+        document.getElementById('result-area').style.display = "block";
+        
+        let score = 0;
+        let expHtml = "";
+        questions.forEach((q, i) => {
+            const isCorrect = userAnswers[i] === q.ans;
+            if(isCorrect) score++;
+            expHtml += `<div style="border-bottom: 1px solid #eee; padding:15px 0;">
+                <p><b>Q${i+1}. ${q.mr}</b></p>
+                <p>तुमचे उत्तर: <span style="color:${isCorrect ? 'green':'red'}">${userAnswers[i] !== null ? q.options[userAnswers[i]] : 'सोडले'}</span></p>
+                ${!isCorrect ? `<p style="color:green">योग्य उत्तर: ${q.options[q.ans]}</p>` : ''}
+                <div class="explanation">💡 ${q.exp}</div>
+            </div>`;
+        });
+        document.getElementById('score-card').innerText = `गुण: ${score} / ${questions.length}`;
+        document.getElementById('explanation-list').innerHTML = expHtml;
+        window.scrollTo(0,0);
+    }
+
+    loadQuestion();
+</script>
+</body>
+</html>
